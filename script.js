@@ -1,11 +1,43 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Select DOM Elements
+    // ===== Select DOM Elements =====
     const addButton = document.getElementById('add-task-btn');
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
 
-    // Create the addTask Function
+    // ===== Load tasks from Local Storage =====
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    // ===== Helper: Create a single task element =====
+    function createTaskElement(taskText) {
+        const li = document.createElement('li');
+        li.textContent = taskText;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = "Remove";
+        removeBtn.classList.add('remove-btn');
+
+        // Remove task
+        removeBtn.onclick = function () {
+            taskList.removeChild(li);
+
+            // Remove from Local Storage
+            tasks = tasks.filter(t => t !== taskText);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        };
+
+        li.appendChild(removeBtn);
+        taskList.appendChild(li);
+    }
+
+    // ===== Load saved tasks on page load =====
+    function loadTasks() {
+        tasks.forEach(task => createTaskElement(task));
+    }
+
+    loadTasks();
+
+    // ===== Main function: Add new task =====
     function addTask() {
         const taskText = taskInput.value.trim();
 
@@ -14,27 +46,18 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Task Creation and Removal
-        const li = document.createElement('li');
-        li.textContent = taskText;
+        // Add to UI
+        createTaskElement(taskText);
 
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = "Remove";
+        // Save to Local Storage
+        tasks.push(taskText);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
 
-        // IMPORTANT: Autograder requires this
-        removeBtn.classList.add("remove-btn");
-
-        removeBtn.onclick = function () {
-            taskList.removeChild(li);
-        };
-
-        li.appendChild(removeBtn);
-        taskList.appendChild(li);
-
+        // Clear input
         taskInput.value = "";
     }
 
-    // Attach Event Listeners
+    // ===== Event Listeners =====
     addButton.addEventListener('click', addTask);
 
     taskInput.addEventListener('keypress', function (event) {
@@ -43,6 +66,4 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Invoke addTask on DOMContentLoaded
-    addTask();
 });
