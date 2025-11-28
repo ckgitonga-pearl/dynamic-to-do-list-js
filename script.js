@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ===== Select DOM Elements =====
+    // Select DOM Elements
     const addButton = document.getElementById('add-task-btn');
     const taskInput = document.getElementById('task-input');
     const taskList = document.getElementById('task-list');
 
-    // ===== Load tasks from Local Storage =====
+    // Load tasks from Local Storage
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-    // ===== Helper: Create a single task element =====
+    // Helper: Create a single task element 
     function createTaskElement(taskText) {
         const li = document.createElement('li');
         li.textContent = taskText;
